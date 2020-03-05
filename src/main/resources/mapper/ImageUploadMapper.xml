@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.dao.ImageUploadDao">
+<insert id="insertImgPath" parameterType="string">
+    insert into imgUploadInfo (imgPath)
+    values (#{imgPath})
+</insert>
+    <insert id="insertImgZip" parameterType="com.library.bean.ImageUpload">
+        insert into imgUploadInfo (imgPath,sampleName,pictureNumber,checkMember,acceptedList)
+        values (#{imgpath},#{sampleName},#{pictureNumber},#{checkMember},#{acceptedList})
+    </insert>
+</mapper>
+
+

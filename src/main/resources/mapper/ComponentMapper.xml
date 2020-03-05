@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.dao.ComponentDao">
+    <!-- 查询部件-->
+    <select id="searchPartsList"  resultType="java.util.Map">
+        SELECT
+            dtid as dtId,
+            TYPEname as typeName,
+            typecode as typeCode,
+            componentname as partsName,
+            componentcode as partsCode
+        FROM
+            component
+	    </select>
+    <!--删除部件-->
+    <delete id="deletePart" parameterType="com.library.bean.Component">
+        DELETE from component where dtid = #{dtId}
+    </delete>
+    <!--新增部件-->
+    <insert id="insertParts" parameterType="com.library.bean.Component">
+        INSERT INTO component (
+            dtid,
+            typename,
+            typecode,
+            componentname,
+            componentcode
+        )
+VALUES
+	    (#{dtId},#{typeName},#{typeCode},#{partsName},#{partsCode});
+    </insert>
+
+    <!--修改部件名-->
+    <update id="updatePartByDtId" parameterType="com.library.bean.Component">
+        UPDATE component
+            SET
+        <if test="typeName!=null">
+            typename = #{typeName},
+        </if>
+        <if test="typeCode!=null">
+            typecode = #{typeCode},
+        </if>
+        <if test="partsName!=null">
+        componentname = #{partsName},
+       </if>
+        <if test="partsCode!=null">
+            componentcode = #{partsCode},
+        </if>
+        componentcode = #{partsCode}
+            WHERE
+          dtid = #{dtId}
+    </update>
+</mapper>

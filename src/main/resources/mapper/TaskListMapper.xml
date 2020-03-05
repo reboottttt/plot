@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.dao.TaskListDao">
+    <select id="countAllTask"  resultType="Integer">
+        SELECT
+            COUNT(uapId)
+        FROM
+            assignview
+    </select>
+    <!--任务分页查询-->
+    <select id="allTaskList"  resultType="java.util.Map">
+        SELECT
+            t1.accuracy,
+            t1.sampleName AS assignDir,
+            t1.pictureNumber AS assignNumber,
+            t1.startTime AS assignTime,
+            t1.rejectReason,
+            t1.reviewStatus,
+            t1.uapId
+        FROM
+            assignview t1
+    </select>
+    <update id="updateTaskStatusPass" parameterType="com.library.bean.TaskList">
+        UPDATE assignview
+        SET
+        reviewStatus = 1,
+        assignStatus = 4,
+        rejectReason = NULL,
+        accuracy = #{accuracy}
+        WHERE
+        uapId = #{uapId}
+    </update>
+    <update id="updateTaskStatusReject" parameterType="com.library.bean.TaskList">
+        UPDATE assignview
+        SET
+        reviewStatus = 2,
+        assignStatus = 3,
+        rejectReason = #{rejectReason}
+        WHERE
+        uapId = #{uapId}
+    </update>
+</mapper>

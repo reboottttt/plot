@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.dao.PlotSizeDao">
+    <!--新增标注-->
+    <insert id="insertPlotSize" parameterType="java.util.Map">
+        INSERT INTO plotsize (
+            filename,
+            size,
+            plotData,
+            uardId,
+            status
+        )
+        VALUES
+           (#{filename},#{size}, #{plotDataDo}, #{uardId},1)
+    </insert>
+    <!--判断是否更新-->
+    <select id="judgePlotSize" parameterType="Integer" resultType="Integer">
+        SELECT
+            count(*)
+        FROM
+            plotsize
+        WHERE
+            uardId = #{uardId}
+    </select>
+    <!--获取已标注图片数-->
+    <select id="countPlotNum" resultType="Integer">
+         SELECT
+            count(*)
+        FROM
+            plotsize t2, assignview t1
+        WHERE
+            (t2.plotData != '') AND t1.uapId = #{uapId} AND t1.uuid = t2.uuid
+    </select>
+    <update id="updatePlotSize" parameterType="java.util.Map">
+        UPDATE plotsize
+        SET
+            filename = #{filename},
+            size  = #{size},
+            plotData = #{plotDataDo}
+        WHERE
+            uardId = #{uardId}
+    </update>
+    <delete id="deletePicture" parameterType="com.library.bean.PlotSize">
+        DELETE from plotsize where uardId = #{uardId}
+    </delete>
+</mapper>

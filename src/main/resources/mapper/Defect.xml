@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.dao.DefectDao">
+    <!--新增缺陷-->
+    <insert id="insertDefects" parameterType="com.library.bean.Defect">
+        INSERT INTO defect (
+        id,
+        dtid,
+        did,
+        name,
+        defect_code,
+        code
+        )
+        VALUES
+        (0,#{dtId},#{dId},#{name},#{defectCode},#{code});
+    </insert>
+
+    <!-- 查询缺陷-->
+    <select id="searchDefectList" parameterType = "string" resultType="com.library.bean.Defect">
+        SELECT
+        T1.dtid as dtId,
+        T1.did as dId,
+        T1.name as name,
+        CONCAT(T2.typecode,T2.componentcode,T1.defect_code) as code,
+        T2.typecode,
+        T1.defect_code as defectCode
+        FROM
+        defect T1
+        LEFT JOIN component T2 ON T1.dtid = T2.dtid
+        <where>
+            <if test="_parameter != null and _parameter!=''">
+                T2.dtid = #{_parameter}
+            </if>
+        </where>
+    </select>
+
+    <select id="serachDtId" resultType="com.library.bean.Defect">
+      SELECT  *  FROM defect WHERE did = #{dId}
+    </select>
+    <select id="searchCode" resultType="com.library.bean.Component">
+            SELECT
+	          typecode as typeCode, componentcode as partsCode
+            FROM
+                component
+            WHERE
+                dtid = #{dtId};
+	    </select>
+
+    <!--修改缺陷名-->
+    <update id="updateDefect" parameterType="com.library.bean.Defect">
+        UPDATE defect
+        SET code = #{code},
+        name = #{name},
+        defect_code = #{defectCode},
+        dtId = #{dtId}
+        WHERE
+        did = #{dId}
+    </update>
+    <!--删除缺陷信息-->
+    <delete id="deleteDefectByDid" parameterType="com.library.bean.Defect">
+        DELETE FROM defect where did = #{dId}
+    </delete>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.dao.AssignListDao">
+    <select id="countAllList"  resultType="Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        assignview
+    </select>
+    <!--任务分页查询-->
+    <select id="AssignList" resultType="java.util.Map">
+        <!--SELECT
+    id,
+    account,
+    checkMember,
+    sampleName,
+    pictureNumber,
+    startTime,
+    assignStatus,
+    fileListUrl
+      FROM
+  assignview
+    -->
+    SELECT
+        T1.uapId as id,
+        T1.account,
+        T2.name as checkMember,
+        T1.sampleName,
+        T1.pictureNumber,
+        T1.startTime as gmtCreate,
+        T1.assignStatus,
+        T1.fileListUrl
+        FROM
+    assignview T1 LEFT JOIN Users T2 ON T1.checkMember = T2.id
+    </select>
+
+    <!--任务分页查询-->
+    <select id="accountAssignList" resultType="java.util.Map">
+        <!--
+        SELECT
+        id,
+        account,
+        checkMember,
+        sampleName,
+        pictureNumber,
+        startTime,
+        assignStatus,
+        fileListUrl
+        FROM
+        assignview WHERE checkMember = #{checkMember}
+        -->
+        SELECT
+            T1.uapId as id,
+            T1.account,
+            T2.name as checkMember,
+            T1.sampleName,
+            T1.pictureNumber,
+            T1.startTime as gmtCreate,
+            T1.assignStatus,
+            T1.fileListUrl
+            FROM
+        assignview T1 LEFT JOIN Users T2 ON T1.checkMember = T2.id WHERE T2.name = #{checkMember}
+    </select>
+
+    <!--insertAssign-->
+    <insert id="insertAssign" parameterType="com.library.bean.AssignList">
+        insert into assignview (uapId,imgPath,sampleName,pictureNumber,checkMember,acceptedList,startTime,uardId,assignStatus,uuid)
+        values (0,#{imgPath},#{sampleName},#{pictureNumber},#{checkMember},#{acceptedList},SYSDATE(),#{uardId},'1',#{uuid})
+    </insert>
+
+    <insert id="insertPicture" parameterType="com.library.bean.Picture">
+        INSERT INTO plotsize (uardId,filename,uapId,picturePath,thumbnailPath,finalPicturePath,checkMember,uuid,plotData) VALUES
+         (0,#{fileName},#{uapId},#{picturePath},#{thumbnailPath},#{finalPicturePath},#{checkMember},#{uuid},#{plotData})
+    </insert>
+
+    <select id="getDownPath" parameterType="java.util.Map" resultType="com.library.bean.AssignList">
+      SELECT uapId as id,IMGPATH FROM assignview WHERE uapId = #{id}
+    </select>
+
+</mapper>

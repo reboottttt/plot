@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.dao.PlotDao">
+    <select id="countAllList"  resultType="Integer">
+        SELECT
+          COUNT(uapId)
+        FROM
+        assignview
+    </select>
+    <!--标图人员查看自己当前所有任务-->
+    <select id="plotList"  resultType="java.util.Map">
+        SELECT
+            uapId,
+            plotNum,
+            assignStatus,
+            rejectReason as reviewOpinion,
+            sampleName,
+            pictureNumber,
+            startTime as gmtCreate
+        FROM
+            assignview
+    </select>
+    <!-- 标图人员查看当前任务图片列表 && 审核人员查看当前所有任务列表，通过用户权限控制 -->
+    <select id="picList"  resultType="java.util.Map">
+        SELECT
+            t2.filename,
+            t2.finalPicturePath,
+            t2.picturePath,
+            t2.thumbnailPath,
+            t2.uardId,
+            case t2.plotData when '' THEN '[]'  else t2.plotData END plotData
+        FROM
+	        assignview t1,plotsize t2
+        WHERE t1.uapId = #{uapId} and t1.uuid = t2.uuid
+    </select>
+    <!-- 标图人员提交任务审核，设置任务任务状态从默认的1到2 -->
+    <update id="updateassignStatus" parameterType="com.library.bean.Plot">
+        UPDATE assignview t1, plotsize t2
+        SET
+        assignStatus = 2,
+        reviewStatus = 0
+        WHERE t1.uapId = #{uapId} and t1.uuid = t2.uuid
+    </update>
+    <update id="updatePlotNum" parameterType="com.library.bean.Plot">
+        UPDATE assignview t1, plotsize t2
+        SET
+        t1.plotNum = #{plotNum}
+        WHERE
+        t1.uapId = #{uapId} AND t1.uuid = t2.uuid
+    </update>
+    <delete id="deleteUapId" parameterType="com.library.bean.Plot">
+        DELETE from assignview where uapId = #{uapId}
+    </delete>
+</mapper>
